@@ -1,3 +1,4 @@
+"""the application factory lives here, along with some routes"""
 import os
 
 from flask import Flask

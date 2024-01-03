@@ -1,3 +1,4 @@
+"""authentication"""
 import functools
 
 from flask import (
@@ -10,7 +11,7 @@ from flaskr.db import get_db
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
-#associate the /register URL with the `register()` view func 
+#associate the /register URL with the `register()` view func
 @bp.route('/register', methods=('GET', 'POST'))
 # the view func, when the URL is hit, this code is run, and then the view is returned and rendered
 def register():
@@ -35,7 +36,7 @@ def register():
                 #this saves the change to the db
                 db.commit()
             except db.IntegrityError:
-                errr =f"User {username} is already registered."
+                err =f"User {username} is already registered."
             else:
                 #url_for is more maintainable than hardcoding the url
                 return redirect(url_for("auth.login"))

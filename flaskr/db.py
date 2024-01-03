@@ -1,10 +1,11 @@
+"""database"""
 import sqlite3
 
 import click
 
 from flask import current_app, g
 
-# g is a special object, unique for each request. 
+# g is a special object, unique for each request.
 # stores data, might be accessed by multiple funcs during the request.
 # connection is stored and reused, if get_db is called another time during same req.
 
@@ -16,6 +17,7 @@ from flask import current_app, g
 # that file doesnt need to exist yet, it will when we init the db later
 
 # sqlite3.Row tells the conn to return rows that behave like dicts. row['col'] == cell
+
 
 def init_db():
     db = get_db()
@@ -31,6 +33,7 @@ def init_db_command():
     init_db()
     click.echo('Initialized database.')
 
+
 def get_db():
     if 'db' not in g:
         g.db = sqlite3.connect(
@@ -38,15 +41,16 @@ def get_db():
             detect_types=sqlite3.PARSE_DECLTYPES
         )
         g.db.row_factory = sqlite3.Row
-    
+
     return g.db
 
-# if g.db was set, we made a connection. so, we close it like s0:
+#if g.db was set, we made a connection. so, we close it like s0:
 def close_db(e=None):
     db = g.pop('db', None)
 
     if db is not None:
         db.close()
+
 
 def init_app(app):
     # tells flask to call close_db() when cleaning up after returning the response.
