@@ -16,7 +16,7 @@ def create_app(test_config=None):
     else:
         # when testing, load test conf
         app.config.from_mapping(test_config)
-    
+
     # ensure instance folder
     try:
         os.makedirs(app.instance_path)
