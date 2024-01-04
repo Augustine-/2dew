@@ -45,7 +45,7 @@ def get_db():
     return g.db
 
 #if g.db was set, we made a connection. so, we close it like s0:
-def close_db(e=None):
+def close_db(e=None): # pylint: disable=unused-argument
     db = g.pop('db', None)
 
     if db is not None:

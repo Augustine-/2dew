@@ -36,7 +36,7 @@ def register():
                 #this saves the change to the db
                 db.commit()
             except db.IntegrityError:
-                err =f"User {username} is already registered."
+                error = f"User {username} is already registered."
             else:
                 #url_for is more maintainable than hardcoding the url
                 return redirect(url_for("auth.login"))
@@ -53,7 +53,7 @@ def login():
         db = get_db()
         error = None
         user = db.execute(
-            'SELECT * FROM user WHERE username = ?', (username)
+            'SELECT * FROM user WHERE username = ?', (username,)
         ).fetchone()
 
         if user is None:
@@ -62,7 +62,7 @@ def login():
             error = 'Incorrect password.'
 
         if error is None:
-            session.cear()
+            session.clear()
             session['user_id'] = user['id']
             return redirect(url_for('index'))
 
@@ -82,14 +82,20 @@ def load_logged_in_user():
         ).fetchone()
         # we include a comma after user_id here, because `execute()` expects a tuple.
         # we can add a trailing comma to make a single-element tuple.
+
 @bp.route('/logout')
 def logout():
     session.clear()
     return redirect(url_for('index'))
 
 def login_required(view):
+    """
+    this will be a decorator to wrap other views that require login.
+    if an unauthed user attempts to visit, send them to the login page.
+    """
     @functools.wraps(view)
     def wrapped_view(**kwargs):
+        # **kwargs is python for "accept an arbitrary number of args as k-v pairs."
         if g.user is None:
             return redirect(url_for('auth.login'))
 
