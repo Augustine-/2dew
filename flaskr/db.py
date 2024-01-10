@@ -51,7 +51,6 @@ def close_db(e=None): # pylint: disable=unused-argument
     if db is not None:
         db.close()
 
-
 def init_app(app):
     # tells flask to call close_db() when cleaning up after returning the response.
     app.teardown_appcontext(close_db)

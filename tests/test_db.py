@@ -9,7 +9,7 @@ from flaskr.db import get_db
 
 """
 within an appplication context,
-get_db should return the same connectin each time it's called.
+get_db should return the same connection each time it's called.
 after the context,
 the connection should be closed.
 """
@@ -39,4 +39,3 @@ def test_init_db_command(runner, monkeypatch):
         result = runner.invoke(args=['init-db'])
         assert 'Initialized' in result.output
         assert Recorder.called
-

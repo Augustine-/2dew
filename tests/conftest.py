@@ -2,7 +2,7 @@
 
 Pytest uses fixtures by matching their function names with the names of args in the test functins.
 
-for example, the `test_hello` function takes a `client` argument.
+for example, the `test_yo` function takes a `client` argument.
     pytest matches that with the `client` fixture definition, calls it, and passes the returned value to the test functin.
 
 """
@@ -57,3 +57,20 @@ def runner(app):
     creates a runner that can call the Click commands registered with the application.
     """
     return app.test_cli_runner()
+
+class AuthActions(object):
+    def __init__(self, client):
+        self._client = client
+
+    def login(self, username='test', password='test'):
+        return self._client.post(
+            '/auth/login',
+            data={'username': username, 'password': password}
+        )
+
+    def logout(self):
+        return self._client.get('/auth/logout')
+
+@pytest.fixture
+def auth(client):
+    return AuthActions(client)
