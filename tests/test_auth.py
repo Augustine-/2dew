@@ -2,7 +2,7 @@ import pytest
 from flask import g, session
 from flaskr.db import get_db
 
-def test_register(client, app):
+def test_register(client, test_app):
     """
     On POST with valid data, it should register a user in the DB and redirect to the login URL.
     Register view renders on GET.
@@ -13,7 +13,7 @@ def test_register(client, app):
     )
     assert response.headers["Location"] == '/auth/login'
 
-    with app.app_context():
+    with test_app.app_context():
         assert get_db().execute(
             "SELECT * FROM user WHERE username = 'a'"
         ).fetchone() is not None

@@ -32,12 +32,12 @@ def test_login_required(client, path):
     response = client.post(path)
     assert response.headers["Location"] == "/auth/login"
 
-def test_author_required(app, client, auth):
+def test_author_required(test_app, client, auth):
     """
     User may only CUD their own posts.
     """
     # change author to another user
-    with app.app_context():
+    with test_app.app_context():
         db = get_db()
         db.execute('UPDATE post SET author_id = 2 WHERE id = 1')
         db.commit()
@@ -59,7 +59,7 @@ def test_exists_required(client, auth, path):
     auth.login()
     assert client.post(path).status_code == 404
 
-def test_create(client, auth, app):
+def test_create(client, auth, test_app):
     """
     Create view renders.
     POSTing to the database works.
@@ -68,12 +68,12 @@ def test_create(client, auth, app):
     assert client.get('/create').status_code == 200
     client.post('/create', data={'title': 'created', 'body': ''})
 
-    with app.app_context():
+    with test_app.app_context():
         db = get_db()
         count = db.execute('SELECT COUNT(id) FROM post').fetchone()[0]
         assert count == 2
 
-def test_update(client, auth, app):
+def test_update(client, auth, test_app):
     """
     Update view renders.
     UPDATEing a post in the database works.
@@ -82,7 +82,7 @@ def test_update(client, auth, app):
     assert client.get('/1/update').status_code == 200
     client.post('/1/update', data={'title': 'updated', 'body': ''})
 
-    with app.app_context():
+    with test_app.app_context():
         db = get_db()
         post = db.execute('SELECT * FROM post WHERE id = 1').fetchone()
         assert post['title'] == 'updated'
@@ -99,7 +99,7 @@ def test_create_update_validate(client, auth, path):
     response = client.post(path, data={'title': '', 'body': ''})
     assert b'Title is required.' in response.data
 
-def test_delete(client, auth, app):
+def test_delete(client, auth, test_app):
     """
     Delete view redirects to index.
     DELETE removes post from DB.
@@ -108,7 +108,7 @@ def test_delete(client, auth, app):
     response = client.post('/1/delete')
     assert response.headers["Location"] == "/"
 
-    with app.app_context():
+    with test_app.app_context():
         db = get_db()
         post = db.execute('SELECT * FROM post WHERE id = 1').fetchone()
         assert post is None

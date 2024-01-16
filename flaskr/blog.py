@@ -59,14 +59,14 @@ def get_post(post_id, check_author=True):
     ).fetchone()
 
     if post is None:
-        abort(404, f"Post id {id} doesn't exist.")
+        abort(404, f"Post id {post_id} doesn't exist.")
 
     if check_author and post['author_id'] != g.user['id']:
         abort(403)
 
     return post
 
-@bp.route('/<int:id>/update', methods=('GET', 'POST'))
+@bp.route('/<int:post_id>/update', methods=('GET', 'POST'))
 @login_required
 def update(post_id):
     """
@@ -96,7 +96,7 @@ def update(post_id):
 
     return render_template('blog/update.html', post=post)
 
-@bp.route('/<int:id>/delete', methods=('POST',))
+@bp.route('/<int:post_id>/delete', methods=('POST',))
 @login_required
 def delete(post_id):
     get_post(post_id)

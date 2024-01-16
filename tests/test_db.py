@@ -7,14 +7,14 @@ import pytest
 from flaskr.db import get_db
 
 
-def test_get_close_db(app):
+def test_get_close_db(test_app):
     """
     within an appplication context,
     get_db should return the same connection each time it's called.
     after the context,
     the connection should be closed.
     """
-    with app.app_context():
+    with test_app.app_context():
         db = get_db()
         assert db is get_db()
 
