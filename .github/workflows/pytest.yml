@@ -31,6 +31,6 @@ jobs:
         run: pip install -e .
       - name: Testing the code with pytest
         env:
-          TODEW_KEY: ${{ secrets.SECRET_KEY }}
+          TODEW_KEY: ${{ secrets.TODEW_KEY }}
         run: |
           pytest
