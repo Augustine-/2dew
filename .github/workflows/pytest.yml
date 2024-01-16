@@ -30,5 +30,7 @@ jobs:
       - name: Install app
         run: pip install -e .
       - name: Testing the code with pytest
+        env:
+          TODEW_KEY: ${{ secrets.SECRET_KEY }}
         run: |
           pytest
