@@ -3,7 +3,9 @@
 Pytest uses fixtures by matching their function names with the names of args in the test functins.
 
 for example, the `test_yo` function takes a `client` argument.
-    pytest matches that with the `client` fixture definition, calls it, and passes the returned value to the test functin.
+    pytest matches that with the `client` fixture definition,
+    calls it,
+    and passes the returned value to the test function.
 
 """
 import os
@@ -17,7 +19,7 @@ with open(os.path.join(os.path.dirname(__file__), 'data.sql'), 'rb') as f:
     _data_sql = f.read().decode('utf8')
 
 @pytest.fixture
-def app():
+def test_app():
     """
     create and open a temp file, returning the file descrptor and path.
     database path is overridden to point to the temp path.
@@ -29,34 +31,34 @@ def app():
     """
     db_fd, db_path = tempfile.mkstemp()
 
-    app = create_app({
+    test_app = create_app({
         'TESTING': True,
         'DATABASE': db_path
     })
 
-    with app.app_context():
+    with test_app.app_context():
         init_db()
         get_db().executescript(_data_sql)
 
-        yield app
+        yield test_app
 
         os.close(db_fd)
         os.unlink(db_path)
 
 @pytest.fixture
-def client(app):
+def client(test_app):
     """
         client fixture: calls app.test_client() with the app object created by the app fixture.
         tests will use the client to make reqs to the app without running the server.
     """
-    return app.test_client()
+    return test_app.test_client()
 
 @pytest.fixture
-def runner(app):
+def runner(test_app):
     """
     creates a runner that can call the Click commands registered with the application.
     """
-    return app.test_cli_runner()
+    return test_app.test_cli_runner()
 
 class AuthActions(object):
     def __init__(self, client):

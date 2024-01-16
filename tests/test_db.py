@@ -1,19 +1,19 @@
 """
 Test the database.
 """
-
 import sqlite3
 
 import pytest
 from flaskr.db import get_db
 
-"""
-within an appplication context,
-get_db should return the same connection each time it's called.
-after the context,
-the connection should be closed.
-"""
+
 def test_get_close_db(app):
+    """
+    within an appplication context,
+    get_db should return the same connection each time it's called.
+    after the context,
+    the connection should be closed.
+    """
     with app.app_context():
         db = get_db()
         assert db is get_db()
@@ -27,7 +27,7 @@ def test_init_db_command(runner, monkeypatch):
     """
     the init-db command should call the init_db function and output a message.
 
-    uses the monkeypatch feature to replace the init_db func with one that records that it's been called.
+    uses monkeypatch to replace the init_db func with one that records that it's been called.
     """
     class Recorder(object):
         called = False

@@ -50,12 +50,12 @@ def create():
 
     return render_template('blog/create.html')
 
-def get_post(id, check_author=True):
+def get_post(post_id, check_author=True):
     post = get_db().execute(
         'SELECT p.id, title, body, created, author_id, username'
         ' FROM post p JOIN user u ON p.author_id = u.id'
         ' WHERE p.id = ?',
-        (id,)
+        (post_id,)
     ).fetchone()
 
     if post is None:
@@ -68,11 +68,11 @@ def get_post(id, check_author=True):
 
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
-def update(id):
+def update(post_id):
     """
     handles rendering the update page, and updating the post.
     """
-    post = get_post(id)
+    post = get_post(post_id)
 
     if request.method == 'POST':
         title = request.form['title']
@@ -89,7 +89,7 @@ def update(id):
             db.execute(
                 'UPDATE post SET title = ?, body = ?'
                 ' WHERE id = ?',
-                (title, body, id)
+                (title, body, post_id)
             )
             db.commit()
             return redirect(url_for('blog.index'))
@@ -98,10 +98,10 @@ def update(id):
 
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
-def delete(id):
-    get_post(id)
+def delete(post_id):
+    get_post(post_id)
     db = get_db()
-    db.execute('DELETE FROM post WHERE id = ?', (id,))
+    db.execute('DELETE FROM post WHERE id = ?', (post_id,))
     db.commit()
 
     return redirect(url_for('blog.index'))
